@@ -1,0 +1,27 @@
+{
+    "textures": {
+        "particle": "merculab:block/beaker",
+        "marked": "merculab:block/beaker_marked",
+        "unmarked": "merculab:block/beaker",
+        "bottom": "merculab:block/glassware_bottom"
+    },
+    "elements": [
+        {
+            "from": [ 4, 4, 0 ],
+            "to": [ 12, 16, 0 ],
+            "faces": {
+                "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#marked" },
+                "east": { "uv": [ 16, 0, 0, 16 ], "texture": "#marked" },
+                "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#unmarked" },
+                "west": { "uv": [ 0, 0, 16, 16 ], "texture": "#unmarked" }
+            }
+        },
+        {
+            "from": [ 4, 4, 0 ],
+            "to": [ 12, 12, 0 ],
+            "faces": {
+                "down": { "texture": "#bottom" }
+            }
+        }
+    ]
+}
