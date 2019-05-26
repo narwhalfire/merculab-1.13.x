@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "merculab:block/flask_marked"
+        "layer0": "merculab:block/flask"
     }
 }

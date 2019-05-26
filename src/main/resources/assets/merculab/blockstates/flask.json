@@ -1,7 +1,5 @@
 {
     "variants": {
-        "": {
-            "model": "merculab:block/flask"
-        }
+        "": { "model": "merculab:block/flask" }
     }
 }

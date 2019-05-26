@@ -1,7 +1,5 @@
 {
     "variants": {
-        "": {
-            "model": "merculab:block/jar"
-        }
+        "": { "model": "merculab:block/jar" }
     }
 }

@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "merculab:block/beaker_marked"
+        "layer0": "merculab:block/beaker"
     }
 }
