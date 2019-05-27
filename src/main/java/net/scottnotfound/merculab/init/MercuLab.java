@@ -28,10 +28,7 @@ import net.minecraftforge.registries.DataSerializerEntry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegistryBuilder;
-import net.scottnotfound.merculab.block.labware.BlockBeaker;
-import net.scottnotfound.merculab.block.labware.BlockFlask;
-import net.scottnotfound.merculab.block.labware.BlockJar;
-import net.scottnotfound.merculab.block.labware.BlockVial;
+import net.scottnotfound.merculab.block.labware.*;
 import net.scottnotfound.merculab.chemical.Chemical;
 import net.scottnotfound.merculab.tileentity.labware.TileEntityBeaker;
 import net.scottnotfound.merculab.tileentity.labware.TileEntityFlask;
@@ -146,6 +143,8 @@ public final class MercuLab {
     @ObjectHolder("merculab")
     public static final class Blocks {
 
+        public static final Block LAB_BENCH = null;
+
         public static final Block BEAKER = null;
         public static final Block FLASK = null;
         public static final Block JAR = null;
@@ -156,6 +155,7 @@ public final class MercuLab {
             registry.register(make(new BlockFlask(Block.Properties.create(Material.GLASS)), "flask"));
             registry.register(make(new BlockJar(Block.Properties.create(Material.GLASS)), "jar"));
             registry.register(make(new BlockVial(Block.Properties.create(Material.GLASS)), "vial"));
+            registry.register(make(new BlockLabBench(Block.Properties.create(Material.ROCK)), "lab_bench"));
         }
 
         private static Block make(Block block, String id) {
@@ -172,6 +172,7 @@ public final class MercuLab {
             registry.register(make(new ItemBlock(Blocks.FLASK, new Item.Properties()), "flask"));
             registry.register(make(new ItemBlock(Blocks.JAR, new Item.Properties()), "jar"));
             registry.register(make(new ItemBlock(Blocks.VIAL, new Item.Properties()), "vial"));
+            registry.register(make(new ItemBlock(Blocks.LAB_BENCH, new Item.Properties()), "lab_bench"));
         }
 
         private static Item make(Item item, String id) {
