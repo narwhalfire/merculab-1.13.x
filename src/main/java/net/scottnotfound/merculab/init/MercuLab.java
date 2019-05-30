@@ -161,18 +161,19 @@ public final class MercuLab {
         public static final Block VIAL = null;
 
         private static List<Block> insts = new ArrayList<>();
+        private static List<Block> special = new ArrayList<>();
         static void registerFor(IForgeRegistry<Block> registry) {
             insts.forEach(registry::register);
         }
-        private static void make(Block block, String id) {
-            insts.add(block.setRegistryName("merculab", id));
+        private static void make(Block block, String id, List<Block> list) {
+            list.add(block.setRegistryName("merculab", id));
         }
         static void init() {
-            make(new BlockBeaker(Block.Properties.create(Material.GLASS)), "beaker");
-            make(new BlockFlask(Block.Properties.create(Material.GLASS)), "flask");
-            make(new BlockJar(Block.Properties.create(Material.GLASS)), "jar");
-            make(new BlockVial(Block.Properties.create(Material.GLASS)), "vial");
-            make(new BlockLabBench(Block.Properties.create(Material.ROCK)), "lab_bench");
+            make(new BlockBeaker(Block.Properties.create(Material.GLASS)), "beaker", insts);
+            make(new BlockFlask(Block.Properties.create(Material.GLASS)), "flask", insts);
+            make(new BlockJar(Block.Properties.create(Material.GLASS)), "jar", insts);
+            make(new BlockVial(Block.Properties.create(Material.GLASS)), "vial", insts);
+            make(new BlockLabBench(Block.Properties.create(Material.ROCK)), "lab_bench", insts);
         }
     }
 
@@ -187,11 +188,8 @@ public final class MercuLab {
             insts.add(item.setRegistryName("merculab", id));
         }
         static void init() {
-            make(new ItemBlock(Blocks.BEAKER, new Item.Properties()), "beaker");
-            make(new ItemBlock(Blocks.FLASK, new Item.Properties()), "flask");
-            make(new ItemBlock(Blocks.JAR, new Item.Properties()), "jar");
-            make(new ItemBlock(Blocks.VIAL, new Item.Properties()), "vial");
-            make(new ItemBlock(Blocks.LAB_BENCH, new Item.Properties()), "lab_bench");
+            Blocks.insts.forEach((block) -> make(new ItemBlock(block, new Item.Properties()),
+                                                 block.getRegistryName().getPath()));
         }
     }
 
