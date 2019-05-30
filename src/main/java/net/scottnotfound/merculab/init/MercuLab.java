@@ -37,6 +37,8 @@ import net.scottnotfound.merculab.tileentity.labware.TileEntityVial;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Mod("merculab")
@@ -51,6 +53,12 @@ public final class MercuLab {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
         MinecraftForge.EVENT_BUS.register(this);
+        init();
+    }
+
+    private void init() {
+        Blocks.init();
+        Items.init();
     }
 
     private void setup(FMLCommonSetupEvent event) {
@@ -150,33 +158,38 @@ public final class MercuLab {
         public static final Block JAR = null;
         public static final Block VIAL = null;
 
+        private static List<Block> insts = new ArrayList<>();
         static void registerFor(IForgeRegistry<Block> registry) {
-            registry.register(make(new BlockBeaker(Block.Properties.create(Material.GLASS)), "beaker"));
-            registry.register(make(new BlockFlask(Block.Properties.create(Material.GLASS)), "flask"));
-            registry.register(make(new BlockJar(Block.Properties.create(Material.GLASS)), "jar"));
-            registry.register(make(new BlockVial(Block.Properties.create(Material.GLASS)), "vial"));
-            registry.register(make(new BlockLabBench(Block.Properties.create(Material.ROCK)), "lab_bench"));
+            insts.forEach(registry::register);
         }
-
-        private static Block make(Block block, String id) {
-            return block.setRegistryName("merculab", id);
+        private static void make(Block block, String id) {
+            insts.add(block.setRegistryName("merculab", id));
+        }
+        static void init() {
+            make(new BlockBeaker(Block.Properties.create(Material.GLASS)), "beaker");
+            make(new BlockFlask(Block.Properties.create(Material.GLASS)), "flask");
+            make(new BlockJar(Block.Properties.create(Material.GLASS)), "jar");
+            make(new BlockVial(Block.Properties.create(Material.GLASS)), "vial");
+            make(new BlockLabBench(Block.Properties.create(Material.ROCK)), "lab_bench");
         }
     }
 
     @ObjectHolder("merculab")
     public static final class Items {
-        private static final Item DEFAULT = net.minecraft.init.Items.AIR;
 
+        private static List<Item> insts = new ArrayList<>();
         static void registerFor(IForgeRegistry<Item> registry) {
-            registry.register(make(new ItemBlock(Blocks.BEAKER, new Item.Properties()), "beaker"));
-            registry.register(make(new ItemBlock(Blocks.FLASK, new Item.Properties()), "flask"));
-            registry.register(make(new ItemBlock(Blocks.JAR, new Item.Properties()), "jar"));
-            registry.register(make(new ItemBlock(Blocks.VIAL, new Item.Properties()), "vial"));
-            registry.register(make(new ItemBlock(Blocks.LAB_BENCH, new Item.Properties()), "lab_bench"));
+            insts.forEach(registry::register);
         }
-
-        private static Item make(Item item, String id) {
-            return item.setRegistryName("merculab", id);
+        private static void make(Item item, String id) {
+            insts.add(item.setRegistryName("merculab", id));
+        }
+        static void init() {
+            make(new ItemBlock(Blocks.BEAKER, new Item.Properties()), "beaker");
+            make(new ItemBlock(Blocks.FLASK, new Item.Properties()), "flask");
+            make(new ItemBlock(Blocks.JAR, new Item.Properties()), "jar");
+            make(new ItemBlock(Blocks.VIAL, new Item.Properties()), "vial");
+            make(new ItemBlock(Blocks.LAB_BENCH, new Item.Properties()), "lab_bench");
         }
     }
 
@@ -223,15 +236,20 @@ public final class MercuLab {
         public static final TileEntityType JAR = null;
         public static final TileEntityType VIAL = null;
 
+        private static List<TileEntityType<?>> insts = new ArrayList<>();
         static void registerFor(IForgeRegistry<TileEntityType<?>> registry) {
-            registry.register(make(TileEntityBeaker::new, "beaker"));
-            registry.register(make(TileEntityFlask::new, "flask"));
-            registry.register(make(TileEntityJar::new, "jar"));
-            registry.register(make(TileEntityVial::new, "vial"));
+            insts.forEach(registry::register);
         }
-
-        private static TileEntityType<?> make(Supplier<? extends TileEntity> s, String id) {
-            return TileEntityType.Builder.create(s).build(null).setRegistryName("merculab", id);
+        private static void make(Supplier<? extends TileEntity> s, String id) {
+            insts.add(TileEntityType.Builder.create(s)
+                                            .build(null)
+                                            .setRegistryName("merculab", id));
+        }
+        static void init() {
+            make(TileEntityBeaker::new, "beaker");
+            make(TileEntityFlask::new, "flask");
+            make(TileEntityJar::new, "jar");
+            make(TileEntityVial::new, "vial");
         }
     }
 
@@ -253,15 +271,18 @@ public final class MercuLab {
         public static final Chemical METHANE = null;
         public static final Chemical FERRIC_OXIDE = null;
 
+        private static List<Chemical> insts = new ArrayList<>();
         static void registerFor(IForgeRegistry<Chemical> registry) {
-            registry.register(make(new Chemical(Chemical.Properties.SODIUM_CHLORIDE), "sodium_chloride"));
-            registry.register(make(new Chemical(Chemical.Properties.WATER), "water"));
-            registry.register(make(new Chemical(Chemical.Properties.METHANE), "methane"));
-            registry.register(make(new Chemical(Chemical.Properties.FERRIC_OXIDE), "ferric_oxide"));
+            insts.forEach(registry::register);
         }
-
-        private static Chemical make(Chemical chemical, String id) {
-            return chemical.setRegistryName("merculab", id);
+        private static void make(Chemical chemical, String id) {
+            insts.add(chemical.setRegistryName("merculab", id));
+        }
+        static void init() {
+            make(new Chemical(Chemical.Properties.SODIUM_CHLORIDE), "sodium_chloride");
+            make(new Chemical(Chemical.Properties.WATER), "water");
+            make(new Chemical(Chemical.Properties.METHANE), "methane");
+            make(new Chemical(Chemical.Properties.FERRIC_OXIDE), "ferric_oxide");
         }
 
     }
