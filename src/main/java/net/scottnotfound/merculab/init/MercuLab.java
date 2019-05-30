@@ -59,6 +59,8 @@ public final class MercuLab {
     private void init() {
         Blocks.init();
         Items.init();
+        TileEntityTypes.init();
+        Chemicals.init();
     }
 
     private void setup(FMLCommonSetupEvent event) {
