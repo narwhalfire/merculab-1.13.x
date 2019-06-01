@@ -35,6 +35,10 @@ public class Chemical extends ForgeRegistryEntry<Chemical> {
                                                                      5250000,
                                                                      1812,
                                                                      0);
+        public static final Properties TUNGSTEN_CARBIDE = new Properties(195850,
+                                                                         15630000,
+                                                                         3100,
+                                                                         6270);
 
         /** mg/mol */
         private int molecularMass;

@@ -28,8 +28,10 @@ import net.minecraftforge.registries.DataSerializerEntry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegistryBuilder;
+import net.scottnotfound.merculab.block.chemical.BlockChemical;
 import net.scottnotfound.merculab.block.labware.*;
 import net.scottnotfound.merculab.chemical.Chemical;
+import net.scottnotfound.merculab.item.chemical.ItemChemical;
 import net.scottnotfound.merculab.tileentity.labware.TileEntityBeaker;
 import net.scottnotfound.merculab.tileentity.labware.TileEntityFlask;
 import net.scottnotfound.merculab.tileentity.labware.TileEntityJar;
@@ -37,15 +39,15 @@ import net.scottnotfound.merculab.tileentity.labware.TileEntityVial;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
 
-@Mod("merculab")
-@SuppressWarnings("ConstantConditions")
+@Mod(MercuLab.MODID)
+@SuppressWarnings("unused")
 public final class MercuLab {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    public static final String MODID = "merculab";
 
     public MercuLab() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -56,11 +58,22 @@ public final class MercuLab {
         init();
     }
 
+    /**
+     * Initializing these before the registry events are fired allows the registering of blocks and items
+     * depending on what chemicals are being registered.
+     */
     private void init() {
+        priorityInit();
+        TileEntityTypes.init();
+    }
+
+    /**
+     * Chemicals must be initialized first, then blocks, then items, then whatever
+     */
+    private void priorityInit() {
+        Chemicals.init();
         Blocks.init();
         Items.init();
-        TileEntityTypes.init();
-        Chemicals.init();
     }
 
     private void setup(FMLCommonSetupEvent event) {
@@ -85,8 +98,8 @@ public final class MercuLab {
         @SubscribeEvent
         public static void onRegistries(final RegistryEvent.NewRegistry event) {
             Registry.CHEMICALS = new RegistryBuilder<Chemical>()
-                    .setName(new ResourceLocation("merculab:chemicals"))
-                    .setDefaultKey(new ResourceLocation("merculab:nil"))
+                    .setName(new ResourceLocation(MODID, "chemicals"))
+                    .setDefaultKey(new ResourceLocation(MODID, "nil"))
                     .setType(Chemical.class)
                     .create();
         }
@@ -150,7 +163,7 @@ public final class MercuLab {
 
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class Blocks {
 
         public static final Block LAB_BENCH = null;
@@ -166,7 +179,7 @@ public final class MercuLab {
             insts.forEach(registry::register);
         }
         private static void make(Block block, String id, List<Block> list) {
-            list.add(block.setRegistryName("merculab", id));
+            list.add(block.setRegistryName(MODID, id));
         }
         static void init() {
             make(new BlockBeaker(Block.Properties.create(Material.GLASS)), "beaker", insts);
@@ -174,61 +187,66 @@ public final class MercuLab {
             make(new BlockJar(Block.Properties.create(Material.GLASS)), "jar", insts);
             make(new BlockVial(Block.Properties.create(Material.GLASS)), "vial", insts);
             make(new BlockLabBench(Block.Properties.create(Material.ROCK)), "lab_bench", insts);
+            Chemicals.blockInsts.forEach(chemical -> make(
+                    new BlockChemical(chemical, Block.Properties.create(Material.ROCK)),
+                    chemical.getRegistryName().getPath(), insts));
         }
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class Items {
 
         private static List<Item> insts = new ArrayList<>();
         static void registerFor(IForgeRegistry<Item> registry) {
             insts.forEach(registry::register);
         }
-        private static void make(Item item, String id) {
-            insts.add(item.setRegistryName("merculab", id));
+        private static void make(Item item, String id, List<Item> list) {
+            list.add(item.setRegistryName(MODID, id));
         }
         static void init() {
-            Blocks.insts.forEach((block) -> make(new ItemBlock(block, new Item.Properties()),
-                                                 block.getRegistryName().getPath()));
+            Blocks.insts.forEach(block -> make(new ItemBlock(block, new Item.Properties()),
+                                               block.getRegistryName().getPath() + "_block", insts));
+            Chemicals.itemInsts.forEach(chemical -> make(new ItemChemical(chemical, new Item.Properties()),
+                                                         chemical.getRegistryName().getPath(), insts));
         }
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class Potions {
 
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class Biomes {
 
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class SoundEvents {
 
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class PotionTypes {
 
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class Enchantments {
 
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class VillagerProfessions {
 
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class EntityTypes {
 
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class TileEntityTypes {
 
         public static final TileEntityType BEAKER = null;
@@ -240,49 +258,60 @@ public final class MercuLab {
         static void registerFor(IForgeRegistry<TileEntityType<?>> registry) {
             insts.forEach(registry::register);
         }
-        private static void make(Supplier<? extends TileEntity> s, String id) {
-            insts.add(TileEntityType.Builder.func_200963_a(s)
+        private static void make(Supplier<? extends TileEntity> s, String id, List<TileEntityType<?>> list) {
+            list.add(TileEntityType.Builder.create(s)
                                             .build(null)
-                                            .setRegistryName("merculab", id));
+                                            .setRegistryName(MODID, id));
         }
         static void init() {
-            make(TileEntityBeaker::new, "beaker");
-            make(TileEntityFlask::new, "flask");
-            make(TileEntityJar::new, "jar");
-            make(TileEntityVial::new, "vial");
+            make(TileEntityBeaker::new, "beaker", insts);
+            make(TileEntityFlask::new, "flask", insts);
+            make(TileEntityJar::new, "jar", insts);
+            make(TileEntityVial::new, "vial", insts);
         }
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class ModDimensions {
 
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class DataSerializers {
 
     }
 
-    @ObjectHolder("merculab")
+    @ObjectHolder(MODID)
     public static final class Chemicals {
 
         public static final Chemical SODIUM_CHLORIDE = null;
         public static final Chemical WATER = null;
         public static final Chemical METHANE = null;
         public static final Chemical FERRIC_OXIDE = null;
+        public static final Chemical TUNGSTEN_CARBIDE = null;
 
-        private static List<Chemical> insts = new ArrayList<>();
+        private static List<Chemical> normInsts = new ArrayList<>();
+        private static List<Chemical> blockInsts = new ArrayList<>();
+        private static List<Chemical> fluidInsts = new ArrayList<>();
+        private static List<Chemical> itemInsts = new ArrayList<>();
         static void registerFor(IForgeRegistry<Chemical> registry) {
-            insts.forEach(registry::register);
+            normInsts.forEach(registry::register);
+            blockInsts.forEach(registry::register);
+            fluidInsts.forEach(registry::register);
+            itemInsts.forEach(registry::register);
         }
-        private static void make(Chemical chemical, String id) {
-            insts.add(chemical.setRegistryName("merculab", id));
+        @SafeVarargs
+        private static void make(Chemical chemical, String id, List<Chemical>... lists) {
+            for (List<Chemical> list : lists) {
+                list.add(chemical.setRegistryName(MODID, id));
+            }
         }
         static void init() {
-            make(new Chemical(Chemical.Properties.SODIUM_CHLORIDE), "sodium_chloride");
-            make(new Chemical(Chemical.Properties.WATER), "water");
-            make(new Chemical(Chemical.Properties.METHANE), "methane");
-            make(new Chemical(Chemical.Properties.FERRIC_OXIDE), "ferric_oxide");
+            make(new Chemical(Chemical.Properties.SODIUM_CHLORIDE), "sodium_chloride", itemInsts);
+            make(new Chemical(Chemical.Properties.WATER), "water", normInsts);
+            make(new Chemical(Chemical.Properties.METHANE), "methane", fluidInsts);
+            make(new Chemical(Chemical.Properties.FERRIC_OXIDE), "ferric_oxide", itemInsts);
+            make(new Chemical(Chemical.Properties.TUNGSTEN_CARBIDE), "tungsten_carbide", blockInsts, itemInsts);
         }
 
     }
