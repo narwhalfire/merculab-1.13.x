@@ -83,7 +83,7 @@ public final class MercuLab {
     public static class RegistryEvents {
 
         @SubscribeEvent
-        public static void onRegistries(RegistryEvent.NewRegistry event) {
+        public static void onRegistries(final RegistryEvent.NewRegistry event) {
             Registry.CHEMICALS = new RegistryBuilder<Chemical>()
                     .setName(new ResourceLocation("merculab:chemicals"))
                     .setDefaultKey(new ResourceLocation("merculab:nil"))
@@ -99,31 +99,31 @@ public final class MercuLab {
             Items.registerFor(event.getRegistry());
         }
         @SubscribeEvent
-        public static void onPotions(RegistryEvent.Register<Potion> event) {
+        public static void onPotions(final RegistryEvent.Register<Potion> event) {
 
         }
         @SubscribeEvent
-        public static void onBiomes(RegistryEvent.Register<Biome> event) {
+        public static void onBiomes(final RegistryEvent.Register<Biome> event) {
 
         }
         @SubscribeEvent
-        public static void onSounds(RegistryEvent.Register<SoundEvent> event) {
+        public static void onSounds(final RegistryEvent.Register<SoundEvent> event) {
 
         }
         @SubscribeEvent
-        public static void onPotionTypes(RegistryEvent.Register<PotionType> event) {
+        public static void onPotionTypes(final RegistryEvent.Register<PotionType> event) {
 
         }
         @SubscribeEvent
-        public static void onEnchantments(RegistryEvent.Register<Enchantment> event) {
+        public static void onEnchantments(final RegistryEvent.Register<Enchantment> event) {
 
         }
         @SubscribeEvent
-        public static void onVillagers(RegistryEvent.Register<VillagerRegistry.VillagerProfession> event) {
+        public static void onVillagers(final RegistryEvent.Register<VillagerRegistry.VillagerProfession> event) {
 
         }
         @SubscribeEvent
-        public static void onEntities(RegistryEvent.Register<EntityType<?>> event) {
+        public static void onEntities(final RegistryEvent.Register<EntityType<?>> event) {
 
         }
         @SubscribeEvent
@@ -131,15 +131,15 @@ public final class MercuLab {
             TileEntityTypes.registerFor(event.getRegistry());
         }
         @SubscribeEvent
-        public static void onDims(RegistryEvent.Register<ModDimension> event) {
+        public static void onDims(final RegistryEvent.Register<ModDimension> event) {
 
         }
         @SubscribeEvent
-        public static void onDataSerializers(RegistryEvent.Register<DataSerializerEntry> event) {
+        public static void onDataSerializers(final RegistryEvent.Register<DataSerializerEntry> event) {
 
         }
         @SubscribeEvent
-        public static void onChemicals(RegistryEvent.Register<Chemical> event) {
+        public static void onChemicals(final RegistryEvent.Register<Chemical> event) {
             Chemicals.registerFor(event.getRegistry());
         }
     }
