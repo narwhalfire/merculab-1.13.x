@@ -241,7 +241,7 @@ public final class MercuLab {
             insts.forEach(registry::register);
         }
         private static void make(Supplier<? extends TileEntity> s, String id) {
-            insts.add(TileEntityType.Builder.create(s)
+            insts.add(TileEntityType.Builder.func_200963_a(s)
                                             .build(null)
                                             .setRegistryName("merculab", id));
         }
