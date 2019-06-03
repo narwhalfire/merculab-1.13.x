@@ -189,7 +189,7 @@ public final class MercuLab {
             make(new BlockLabBench(Block.Properties.create(Material.ROCK)), "lab_bench", insts);
             Chemicals.blockInsts.forEach(chemical -> make(
                     new BlockChemical(chemical, Block.Properties.create(Material.ROCK)),
-                    chemical.getRegistryName().getPath(), insts));
+                    chemical.getRegistryName().getPath() + "_block", insts));
         }
     }
 
@@ -205,9 +205,11 @@ public final class MercuLab {
         }
         static void init() {
             Blocks.insts.forEach(block -> make(new ItemBlock(block, new Item.Properties()),
-                                               block.getRegistryName().getPath() + "_block", insts));
+                                               block.getRegistryName().getPath(), insts));
             Chemicals.itemInsts.forEach(chemical -> make(new ItemChemical(chemical, new Item.Properties()),
                                                          chemical.getRegistryName().getPath(), insts));
+            Chemicals.blockInsts.forEach(chemical -> make(new ItemChemical(chemical, new Item.Properties()),
+                                                          chemical.getRegistryName().getPath(), insts));
         }
     }
 
@@ -300,18 +302,15 @@ public final class MercuLab {
             fluidInsts.forEach(registry::register);
             itemInsts.forEach(registry::register);
         }
-        @SafeVarargs
-        private static void make(Chemical chemical, String id, List<Chemical>... lists) {
-            for (List<Chemical> list : lists) {
-                list.add(chemical.setRegistryName(MODID, id));
-            }
+        private static void make(Chemical chemical, String id, List<Chemical> list) {
+            list.add(chemical.setRegistryName(MODID, id));
         }
         static void init() {
             make(new Chemical(Chemical.Properties.SODIUM_CHLORIDE), "sodium_chloride", itemInsts);
             make(new Chemical(Chemical.Properties.WATER), "water", normInsts);
             make(new Chemical(Chemical.Properties.METHANE), "methane", fluidInsts);
             make(new Chemical(Chemical.Properties.FERRIC_OXIDE), "ferric_oxide", itemInsts);
-            make(new Chemical(Chemical.Properties.TUNGSTEN_CARBIDE), "tungsten_carbide", blockInsts, itemInsts);
+            make(new Chemical(Chemical.Properties.TUNGSTEN_CARBIDE), "tungsten_carbide", blockInsts);
         }
 
     }
